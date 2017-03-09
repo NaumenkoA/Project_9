@@ -136,7 +136,7 @@ public class MainActivity extends FragmentActivity implements
                 private boolean isExternalStorageAvailable() {
                     String state = Environment.getExternalStorageState();
 
-                    if (!state.equals(Environment.MEDIA_MOUNTED)) {
+                    if (state.equals(Environment.MEDIA_MOUNTED)) {
                         return true;
                     } else {
                         return false;
@@ -273,7 +273,6 @@ public class MainActivity extends FragmentActivity implements
     private void navigateToLogin() {
         Intent intent = new Intent(this, LoginActivity.class);
         // change this intent so that the user can't hit "back" and get into the inbox
-        //added flags
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
