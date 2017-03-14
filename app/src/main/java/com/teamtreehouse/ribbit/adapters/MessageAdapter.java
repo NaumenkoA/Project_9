@@ -48,13 +48,12 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         }
 
         Message message = mMessages.get(position);
-
         Date createdAt = message.getCreatedAt();
-        long now = new Date().getTime();
-        SimpleDateFormat format = new SimpleDateFormat("EEE, MMM d");
-        String convertedDate = format.format(createdAt);
 
-        holder.timeLabel.setText(convertedDate);
+        //SimpleDateFormat format = new SimpleDateFormat("EEE, MMM d");
+        //String convertedDate = format.format(createdAt);
+
+        holder.timeLabel.setText(getTimeDifference (createdAt));
 
         if (message.getString(Message.KEY_FILE_TYPE).equals(Message.TYPE_IMAGE)) {
             holder.iconImageView.setImageResource(R.drawable.ic_picture);
@@ -65,6 +64,27 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 
         return convertView;
     }
+
+    private String getTimeDifference(Date createdAt) {
+        long diffInSeconds  = (new Date().getTime() - createdAt.getTime())/1000;
+        if (diffInSeconds == 0) return "less than 1 second ago";
+
+        if (diffInSeconds < 60) {
+            if (diffInSeconds == 1 )  return "1 second ago";
+            return diffInSeconds + " seconds ago";
+        }
+        if (diffInSeconds < 60*60) {
+            if (diffInSeconds/60 == 1) return "1 minute ago";
+            return diffInSeconds/60 + " minutes ago";
+        }
+        if (diffInSeconds < 24*60*60) {
+            if (diffInSeconds/(60*60) == 1) return "1 hour ago";
+            return diffInSeconds/(60*60) + " hours ago";
+        }
+        if (diffInSeconds/(24*60*60) == 1) return "1 day ago";
+            return (diffInSeconds/(24*60*60)) + " days ago";
+        }
+
 
     private static class ViewHolder {
         ImageView iconImageView;

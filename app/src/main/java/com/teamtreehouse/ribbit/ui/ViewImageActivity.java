@@ -3,17 +3,23 @@ package com.teamtreehouse.ribbit.ui;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.teamtreehouse.ribbit.R;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class ViewImageActivity extends Activity {
+    TextView mTimerTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,11 +29,13 @@ public class ViewImageActivity extends Activity {
         setupActionBar();
 
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
+        mTimerTextView = (TextView) findViewById(R.id.timerTextView);
 
         Uri imageUri = getIntent().getData();
 
         Picasso.with(this).load(imageUri.toString()).into(imageView);
 
+        startNewCountdown (10*1000);
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -36,6 +44,21 @@ public class ViewImageActivity extends Activity {
             }
         }, 10 * 1000);
     }
+
+    private void startNewCountdown(final int countdownTimeInMillis) {
+           new CountDownTimer(countdownTimeInMillis + 1000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                mTimerTextView.setText(Long.toString(millisUntilFinished / 1000));
+            }
+
+            public void onFinish() {
+                mTimerTextView.setText (getString(R.string.zero));
+                }
+        }.start();
+                }
+
+
 
     /**
      * Set up the {@link android.app.ActionBar}.
