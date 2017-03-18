@@ -88,6 +88,7 @@ public class UserAdapter extends ArrayAdapter<User> {
     }
 
     public void refill(List<User> users) {
+        mUsers = new ArrayList<>();
         mUsers.addAll(users);
         notifyDataSetChanged();
     }

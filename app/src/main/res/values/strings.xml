@@ -58,5 +58,6 @@
     <string name="content_desc_user_checkmark">User checkmark</string>
     <string name="push_message">You have a new Ribbit message from %s!</string>
     <string name="zero">0</string>
+    <string name="send">SEND</string>
 
 </resources>

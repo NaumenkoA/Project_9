@@ -123,6 +123,10 @@ public class EditFriendsActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void sendButtonClicked (View view) {
+
+    }
+
     private void addFriendCheckmarks() {
         mFriendsRelation.getQuery().findInBackground(new FindCallback<User>() {
             @Override
