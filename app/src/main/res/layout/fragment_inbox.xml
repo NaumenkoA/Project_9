@@ -29,4 +29,17 @@
         android:padding="@dimen/activity_horizontal_margin"
         android:text="@string/empty_inbox_label" />
 
+    <ImageButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/fab_circle"
+        android:src="@drawable/ic_add_white_48dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:contentDescription="@string/fab"
+        android:layout_marginBottom="40dp"
+        android:elevation="6dp"
+        android:layout_marginEnd="20dp"/>
+
 </RelativeLayout>

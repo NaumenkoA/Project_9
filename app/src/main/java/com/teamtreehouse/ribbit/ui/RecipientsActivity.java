@@ -160,20 +160,25 @@ public class RecipientsActivity extends Activity {
         message.put(Message.KEY_RECIPIENT_IDS, getRecipientIds());
         message.put(Message.KEY_FILE_TYPE, mFileType);
 
-        byte[] fileBytes = FileHelper.getByteArrayFromFile(this, mMediaUri);
-
-        if (fileBytes == null) {
-            return null;
-        } else {
-            if (mFileType.equals(Message.TYPE_IMAGE)) {
-                fileBytes = FileHelper.reduceImageForUpload(fileBytes);
-            }
-
-            String fileName = FileHelper.getFileName(this, mMediaUri, mFileType);
-            MessageFile file = new MessageFile(fileName, fileBytes, mMediaUri);
-            message.put(Message.KEY_FILE, file);
-
+        if (mFileType.equals(Message.TYPE_TEXT)) {
+            message.setTextMessage(mMediaUri.toString());
             return message;
+        } else {
+
+            byte[] fileBytes = FileHelper.getByteArrayFromFile(this, mMediaUri);
+
+            if (fileBytes == null) {
+                return null;
+            } else {
+                if (mFileType.equals(Message.TYPE_IMAGE)) {
+                    fileBytes = FileHelper.reduceImageForUpload(fileBytes);
+                }
+                String fileName = FileHelper.getFileName(this, mMediaUri, mFileType);
+                MessageFile file = new MessageFile(fileName, fileBytes, mMediaUri);
+                message.put(Message.KEY_FILE, file);
+
+                return message;
+            }
         }
     }
 

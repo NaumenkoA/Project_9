@@ -7,9 +7,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.teamtreehouse.ribbit.R;
@@ -24,15 +26,17 @@ import java.util.List;
 
 public class InboxFragment extends ListFragment {
 
+    public static final String TEXT_MESSAGE = "text_of_message";
     protected List<Message> mMessages;
     protected SwipeRefreshLayout mSwipeRefreshLayout;
+    private ImageButton mFab;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_inbox,
                 container, false);
-
+        mFab = (ImageButton)rootView.findViewById(R.id.fab);
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(mOnRefreshListener);
         // Deprecated method - what should we call instead?
@@ -56,6 +60,14 @@ public class InboxFragment extends ListFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         retrieveMessages();
+
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onFabClickedListener listener = (onFabClickedListener) getActivity();
+                listener.onFabClicked();
+            }
+        });
     }
 
     private void retrieveMessages() {
@@ -101,33 +113,40 @@ public class InboxFragment extends ListFragment {
 
         Message message = mMessages.get(position);
         String messageType = message.getString(Message.KEY_FILE_TYPE);
-        MessageFile file = message.getFile(Message.KEY_FILE);
-        Uri fileUri = file.getUri();
+            if (messageType.equals(Message.TYPE_TEXT)) {
+            // view text message
+                Intent intent = new Intent(getActivity(), ViewTextMessageActivity.class);
+                intent.putExtra(TEXT_MESSAGE, message.getTextMessage());
+                startActivity(intent);
+             } else {
+            MessageFile file = message.getFile(Message.KEY_FILE);
+            Uri fileUri = file.getUri();
 
-        if (messageType.equals(Message.TYPE_IMAGE)) {
-            // view the image
-            Intent intent = new Intent(getActivity(), ViewImageActivity.class);
-            intent.setData(fileUri);
-            startActivity(intent);
-        } else {
-            // view the video
-            Intent intent = new Intent(Intent.ACTION_VIEW, fileUri);
-            intent.setDataAndType(fileUri, "video/*");
-            startActivity(intent);
+            if (messageType.equals(Message.TYPE_IMAGE)) {
+                // view the image
+                Intent intent = new Intent(getActivity(), ViewImageActivity.class);
+                intent.setData(fileUri);
+                startActivity(intent);
+            } else {
+                // view the video
+                Intent intent = new Intent(Intent.ACTION_VIEW, fileUri);
+                intent.setDataAndType(fileUri, "video/*");
+                startActivity(intent);
+            }
         }
 
-        // Delete it!
-        List<String> ids = message.getList(Message.KEY_RECIPIENT_IDS);
+            // Delete it!
+            List<String> ids = message.getList(Message.KEY_RECIPIENT_IDS);
 
-        if (ids.size() == 1) {
-            // last recipient - delete the whole thing!
-            message.deleteInBackground();
+            if (ids.size() == 1) {
+                // last recipient - delete the whole thing!
+                message.deleteInBackground();
+            } else {
+                // remove the recipient
+                message.removeRecipient(User.getCurrentUser().getObjectId());
+            }
         }
-        else {
-            // remove the recipient
-            message.removeRecipient(User.getCurrentUser().getObjectId());
-        }
-    }
+
 
     protected OnRefreshListener mOnRefreshListener = new OnRefreshListener() {
         @Override
@@ -135,9 +154,15 @@ public class InboxFragment extends ListFragment {
             retrieveMessages();
         }
     };
+
+    public interface onFabClickedListener {
+        void onFabClicked ();
+    }
 }
 
-
+//   case R.id.action_camera:
+//          ;
+//           break;
 
 
 

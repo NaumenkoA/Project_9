@@ -32,7 +32,8 @@
     <string name="error_selecting_file">There was an error with the file selected. Please select a different file.</string>
     <string name="error_file_too_large">The selected file is too large! Select a new file.</string>
 
-    <string-array name="camera_choices">
+    <string-array name="message_choices">
+        <item>Text Message</item>
         <item>Take Picture</item>
         <item>Take Video</item>
         <item>Choose Picture</item>
@@ -59,5 +60,8 @@
     <string name="push_message">You have a new Ribbit message from %s!</string>
     <string name="zero">0</string>
     <string name="send">SEND</string>
+    <string name="fab">Floating action button</string>
+    <string name="submit">SUBMIT</string>
+    <string name="message_hint">Enter your message here.</string>
 
 </resources>

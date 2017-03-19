@@ -55,10 +55,14 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 
         holder.timeLabel.setText(getTimeDifference (createdAt));
 
-        if (message.getString(Message.KEY_FILE_TYPE).equals(Message.TYPE_IMAGE)) {
-            holder.iconImageView.setImageResource(R.drawable.ic_picture);
+        if (message.getString(Message.KEY_FILE_TYPE).equals(Message.TYPE_TEXT)) {
+            holder.iconImageView.setImageResource(R.drawable.ic_menu_send);
         } else {
-            holder.iconImageView.setImageResource(R.drawable.ic_video);
+            if (message.getString(Message.KEY_FILE_TYPE).equals(Message.TYPE_IMAGE)) {
+                holder.iconImageView.setImageResource(R.drawable.ic_picture);
+            } else {
+                holder.iconImageView.setImageResource(R.drawable.ic_video);
+            }
         }
         holder.nameLabel.setText(message.getString(Message.KEY_SENDER_NAME));
 

@@ -24,16 +24,34 @@ public class Message implements Comparable<Message> {
 
     public static final String TYPE_IMAGE = "image";
     public static final String TYPE_VIDEO = "video";
+    public static final String TYPE_TEXT = "text";
 
     private UUID id;
     private Date createdAt;
     private MessageFile messageFile;
     private HashMap<String, Object> map;
 
+    public String getTextMessage() {
+        return textMessage;
+    }
+
+    public void setTextMessage(String textMessage) {
+        this.textMessage = textMessage;
+    }
+
+    private String textMessage;
+
     public Message(String className) {
         id = UUID.randomUUID();
         createdAt = new Date();
         map = new HashMap<>();
+    }
+
+    public Message (String message, String type) {
+        id = UUID.randomUUID();
+        createdAt = new Date();
+        map = new HashMap<>();
+        textMessage = message;
     }
 
     public void put(String key, Object o) {

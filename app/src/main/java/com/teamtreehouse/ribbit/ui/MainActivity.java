@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,7 +30,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MainActivity extends FragmentActivity implements
+public class MainActivity extends FragmentActivity implements InboxFragment.onFabClickedListener,
         ActionBar.TabListener {
 
     public static final String TAG = MainActivity.class.getSimpleName();
@@ -38,9 +39,11 @@ public class MainActivity extends FragmentActivity implements
     public static final int TAKE_VIDEO_REQUEST = 1;
     public static final int PICK_PHOTO_REQUEST = 2;
     public static final int PICK_VIDEO_REQUEST = 3;
+    private static final int TEXT_MESSAGE_REQUEST = 6;
 
     public static final int MEDIA_TYPE_IMAGE = 4;
     public static final int MEDIA_TYPE_VIDEO = 5;
+    public static final int MEDIA_TYPE_TEXT = 7;
 
     public static final int FILE_SIZE_LIMIT = 1024 * 1024 * 10; // 10 MB
 
@@ -51,7 +54,11 @@ public class MainActivity extends FragmentActivity implements
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     switch (which) {
-                        case 0: // Take picture
+                        case 0: // Send text message
+                            Intent textMessageIntent = new Intent (MainActivity.this, MessageActivity.class);
+                            startActivityForResult(textMessageIntent, TEXT_MESSAGE_REQUEST);
+                            break;
+                        case 1: // Take picture
                             Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                             mMediaUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
                             if (mMediaUri == null) {
@@ -63,7 +70,7 @@ public class MainActivity extends FragmentActivity implements
                                 startActivityForResult(takePhotoIntent, TAKE_PHOTO_REQUEST);
                             }
                             break;
-                        case 1: // Take video
+                        case 2: // Take video
                             Intent videoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
                             mMediaUri = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);
                             if (mMediaUri == null) {
@@ -77,12 +84,12 @@ public class MainActivity extends FragmentActivity implements
                                 startActivityForResult(videoIntent, TAKE_VIDEO_REQUEST);
                             }
                             break;
-                        case 2: // Choose picture
+                        case 3: // Choose picture
                             Intent choosePhotoIntent = new Intent(Intent.ACTION_GET_CONTENT);
                             choosePhotoIntent.setType("image/*");
                             startActivityForResult(choosePhotoIntent, PICK_PHOTO_REQUEST);
                             break;
-                        case 3: // Choose video
+                        case 4: // Choose video
                             Intent chooseVideoIntent = new Intent(Intent.ACTION_GET_CONTENT);
                             chooseVideoIntent.setType("video/*");
                             Toast.makeText(MainActivity.this, R.string.video_file_size_warning, Toast.LENGTH_LONG).show();
@@ -214,6 +221,9 @@ public class MainActivity extends FragmentActivity implements
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
+            if (requestCode == TEXT_MESSAGE_REQUEST) {
+               mMediaUri = Uri.parse(data.getStringExtra(MessageActivity.MESSAGE));
+            }
             if (requestCode == PICK_PHOTO_REQUEST || requestCode == PICK_VIDEO_REQUEST) {
                 if (data == null) {
                     Toast.makeText(this, getString(R.string.general_error), Toast.LENGTH_LONG).show();
@@ -260,9 +270,12 @@ public class MainActivity extends FragmentActivity implements
             if (requestCode == PICK_PHOTO_REQUEST || requestCode == TAKE_PHOTO_REQUEST) {
                 fileType = Message.TYPE_IMAGE;
             } else {
-                fileType = Message.TYPE_VIDEO;
+                if (requestCode == TEXT_MESSAGE_REQUEST) {
+                    fileType = Message.TYPE_TEXT;
+                } else {
+                    fileType = Message.TYPE_VIDEO;
+                }
             }
-
             recipientsIntent.putExtra(Message.KEY_FILE_TYPE, fileType);
             startActivity(recipientsIntent);
         } else if (resultCode != RESULT_CANCELED) {
@@ -297,13 +310,7 @@ public class MainActivity extends FragmentActivity implements
                 Intent intent = new Intent(this, EditFriendsActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.action_camera:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setItems(R.array.camera_choices, mDialogListener);
-                AlertDialog dialog = builder.create();
-                dialog.show();
-                break;
-        }
+           }
 
         return super.onOptionsItemSelected(item);
     }
@@ -325,4 +332,14 @@ public class MainActivity extends FragmentActivity implements
     public void onTabReselected(ActionBar.Tab tab,
                                 FragmentTransaction fragmentTransaction) {
     }
+
+    @Override
+    public void onFabClicked() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setItems(R.array.message_choices, mDialogListener);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+    }
+
 }
