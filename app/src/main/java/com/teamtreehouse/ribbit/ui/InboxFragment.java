@@ -25,12 +25,13 @@ import com.teamtreehouse.ribbit.models.Query;
 import com.teamtreehouse.ribbit.models.User;
 import com.teamtreehouse.ribbit.models.callbacks.FindCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InboxFragment extends ListFragment {
 
     public static final String TEXT_MESSAGE = "text_of_message";
-    protected List<Message> mMessages;
+    protected List<Message> mMessages = new ArrayList<>();
     protected SwipeRefreshLayout mSwipeRefreshLayout;
     private ImageButton mFab;
 
@@ -145,7 +146,7 @@ public class InboxFragment extends ListFragment {
         if (ids.size() == 1) {
             // last recipient - delete the whole thing!
             message.deleteInBackground();
-        }
+            }
         else {
             // remove the recipient
             message.removeRecipient(User.getCurrentUser().getObjectId());

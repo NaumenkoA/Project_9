@@ -33,6 +33,11 @@ public class MessageAdapter extends ArrayAdapter<Message> {
     }
 
     @Override
+    public int getCount() {
+        return mMessages!=null ? mMessages.size() : 0;
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
 
@@ -47,6 +52,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
             holder = (ViewHolder) convertView.getTag();
         }
 
+        convertView.setVisibility(View.VISIBLE);
         Message message = mMessages.get(position);
         Date createdAt = message.getCreatedAt();
 
@@ -99,11 +105,12 @@ public class MessageAdapter extends ArrayAdapter<Message> {
     public void refill(List<Message> messages) {
         mMessages = new ArrayList<>();
         for (Message msg : messages) {
-            mMessages.add(msg);
+                   mMessages.add(msg);
+               }
+            notifyDataSetChanged();
         }
-         notifyDataSetChanged();
     }
-}
+
 
 
 
