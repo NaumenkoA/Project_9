@@ -11,7 +11,10 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageButton;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.teamtreehouse.ribbit.R;
@@ -52,14 +55,15 @@ public class InboxFragment extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-
+        retrieveMessages();
         getActivity().setProgressBarIndeterminateVisibility(true);
     }
+
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        retrieveMessages();
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +104,7 @@ public class InboxFragment extends ListFragment {
                             setListAdapter(adapter);
                         } else {
                             // refill the adapter!
-                            ((MessageAdapter) getListView().getAdapter()).refill(mMessages);
+                            refillAdapter();
                         }
                     }
                  }
@@ -136,16 +140,21 @@ public class InboxFragment extends ListFragment {
         }
 
             // Delete it!
-            List<String> ids = message.getList(Message.KEY_RECIPIENT_IDS);
+        List<String> ids = message.getList(Message.KEY_RECIPIENT_IDS);
 
-            if (ids.size() == 1) {
-                // last recipient - delete the whole thing!
-                message.deleteInBackground();
-            } else {
-                // remove the recipient
-                message.removeRecipient(User.getCurrentUser().getObjectId());
-            }
+        if (ids.size() == 1) {
+            // last recipient - delete the whole thing!
+            message.deleteInBackground();
         }
+        else {
+            // remove the recipient
+            message.removeRecipient(User.getCurrentUser().getObjectId());
+        }
+        }
+
+    private void refillAdapter() {
+        ((MessageAdapter) getListView().getAdapter()).refill(mMessages);
+    }
 
 
     protected OnRefreshListener mOnRefreshListener = new OnRefreshListener() {

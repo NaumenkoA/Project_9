@@ -97,9 +97,11 @@ public class MessageAdapter extends ArrayAdapter<Message> {
     }
 
     public void refill(List<Message> messages) {
-        mMessages.clear();
-        mMessages.addAll(messages);
-        notifyDataSetChanged();
+        mMessages = new ArrayList<>();
+        for (Message msg : messages) {
+            mMessages.add(msg);
+        }
+         notifyDataSetChanged();
     }
 }
 

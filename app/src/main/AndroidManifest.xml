@@ -71,7 +71,10 @@
         </activity>
         <activity android:name=".ui.MessageActivity">
         </activity>
-        <activity android:name=".ui.ViewTextMessageActivity">
+        <activity android:name=".ui.ViewTextMessageActivity"
+            android:label="@string/title_activity_view_image"
+            android:parentActivityName=".ui.MainActivity"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 
