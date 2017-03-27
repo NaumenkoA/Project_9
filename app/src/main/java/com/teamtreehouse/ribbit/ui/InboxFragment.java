@@ -169,9 +169,7 @@ public class InboxFragment extends ListFragment {
     }
 }
 
-//   case R.id.action_camera:
-//          ;
-//           break;
+
 
 
 
